@@ -10,8 +10,10 @@ warning off
 
 %% Load MNIST dataset 
 
+% subset of MNIST with only 0 and 1
+load('Data/dataset_subMNIST.mat')
 % full MNIST dataset
-load('Data/dataset_MNIST.mat')
+%load('Data/dataset_MNIST.mat')
 
 %% Plot the 9 first images of X_train
 
@@ -61,40 +63,27 @@ L_test = length(Y_test) ;
 % binary classifier applied to test set
 d_test =@(w) d(reshape(X_test, N, L_test), w);
 
-%% Stochastic prox gradient descent algorithm
+%% Forward-Backward algorithm
 
 Stop_norm = 1e-4 ; 
 Stop_crit = 1e-4 ;
-ItMax = 50000 ;
+ItMax = 10000 ;
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% TO COMPLETE
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Choose values for p and theta
-p= 0.001  ; 
-theta = 0.8 ;
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+[w, perc_error, crit, time] = ...
+    FB(winit, X_train_mat, Y_train, lambda, delta, beta, ...
+                    d_test, Y_test, ItMax, Stop_norm, Stop_crit) ;
 
-% disp('Run stochastic prox gradient descent with')
-% disp(['p = ',num2str(p)])
-% disp(['theta = ',num2str(theta)])
-[w_S, perc_error_S, crit_S, time_S] = ...
-FB_sto(winit, X_train_mat, Y_train, lambda, delta, p, theta, ...
-            d_test, Y_test, ItMax, Stop_norm, Stop_crit) ;
+%% Show results
 
+% figure, 
+% subplot 121, plot(cumsum(time), perc_error), xlabel('time (s.)'), ylabel('error (%)'), axis([0 sum(time) 0.1*min(perc_error) 100])
+% subplot 122, semilogy(cumsum(time), perc_error), xlabel('time (s.)'), ylabel('error (%)'), axis([0 sum(time) 0.1*min(perc_error) 100])
+% 
+% Lab = d_test(w) ;
+% figure
+% for i = 1:16
+%     subplot(4,4,i), imagesc(X_test(:,:,i)), axis image, colormap gray
+%     xlabel(['Label: true=',num2str(Y_test(i)),' vs. predicted=',num2str(Lab(i))])
+% end
 
-
-% Show results
-
-figure, 
-subplot 121, plot(cumsum(time_S), perc_error_S), xlabel('time (s.)'), ylabel('error (%)'), axis([0 sum(time_S) 0.5*min(perc_error_S) 100])
-subplot 122, semilogy(cumsum(time_S), perc_error_S), xlabel('time (s.)'), ylabel('error (%)'), axis([0 sum(time_S) 0.5*min(perc_error_S) 100])
-
-Lab_S = d_test(w_S) ;
-figure
-for i = 1:16
-    subplot(4,4,i), imagesc(X_test(:,:,i)), axis image, colormap gray
-    xlabel(['Label: true=',num2str(Y_test(i)),' vs. predicted=',num2str(Lab_S(i))])
-end
-
-save("results")
+save("resultsFB")

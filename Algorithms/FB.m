@@ -27,7 +27,7 @@ for it = 1:ItMax
     % TO COMPLETE
     % FB iterations
     % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    w = prox(wold  - gamma * grad(wold), lambda * gamma); 
+    w = prox(wold  - gamma * grad(wold), gamma*lambda); 
     % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     time(it) = toc(t_start) ;
     
